@@ -300,7 +300,7 @@ TSWLatexianTemp*
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
 
-./data/*
+data
 *.gz
 data/cifar-10-batches-py/batches.meta
 data/cifar-10-batches-py/data_batch_1
