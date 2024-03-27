@@ -61,7 +61,7 @@ def train_fn(
         writer.add_scalar("Critic loss", loss_critic.item(), global_step=tb_step)
         tb_step += 1
 
-        if idx % 1 == 0 and idx > 0:
+        if idx % 100 == 0 and idx > 0:
             plot_examples("test_images/", gen)
 
         loop.set_postfix(
