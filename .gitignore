@@ -317,3 +317,4 @@ low_resolution_image.jpg
 *.pth
 Model/Video/HighRes/speech.mp4
 Model/Video/HighRes/speech_old.mp4
+Model/Video/HighRes/speech_Highres.mp4
