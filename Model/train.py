@@ -76,7 +76,7 @@ def train_fn(
 
 
 def main():
-    dataset = MyImageFolder(root_dir="data/")
+    dataset = MyImageFolder(root_dir="data/HighRes/8K/train/")
     loader = DataLoader(
         dataset,
         batch_size=config.BATCH_SIZE,
