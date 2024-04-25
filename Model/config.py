@@ -3,16 +3,16 @@ from PIL import Image
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-LOAD_MODEL = True
+LOAD_MODEL = False
 SAVE_MODEL = True
-CHECKPOINT_GEN = "gen.pth"
-CHECKPOINT_DISC = "disc.pth"
+CHECKPOINT_GEN = "gen_cross.pth"
+CHECKPOINT_DISC = "disc_cross.pth"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 LEARNING_RATE = 1e-4
-NUM_EPOCHS = 600
-BATCH_SIZE = 16
+NUM_EPOCHS = 15
+BATCH_SIZE = 32
 LAMBDA_GP = 10
-NUM_WORKERS = 8
+NUM_WORKERS = 2
 HIGH_RES = 256
 LOW_RES = HIGH_RES // 4
 IMG_CHANNELS = 3
@@ -34,7 +34,7 @@ lowres_transform = A.Compose(
 
 both_transforms = A.Compose(
     [
-        A.RandomCrop(width=HIGH_RES, height=HIGH_RES),
+        A.Resize(width=HIGH_RES, height=HIGH_RES),
         A.HorizontalFlip(p=0.5),
         A.RandomRotate90(p=0.5),
     ]

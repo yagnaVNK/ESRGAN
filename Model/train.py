@@ -24,9 +24,9 @@ def train_fn(
     d_scaler,
     writer,
     tb_step,
+    epoch,
 ):
     loop = tqdm(loader, leave=True)
-
     for idx, (low_res, high_res) in enumerate(loop):
         high_res = high_res.to(config.DEVICE)
         low_res = low_res.to(config.DEVICE)
@@ -38,7 +38,7 @@ def train_fn(
             gp = gradient_penalty(disc, high_res, fake, device=config.DEVICE)
             loss_critic = (
                 -(torch.mean(critic_real) - torch.mean(critic_fake))
-                + config.LAMBDA_GP * gp
+                # + config.LAMBDA_GP * gp
             )
 
         opt_disc.zero_grad()
@@ -58,13 +58,26 @@ def train_fn(
         g_scaler.step(opt_gen)
         g_scaler.update()
 
-        writer.add_scalar("Critic loss", loss_critic.item(), global_step=tb_step)
+        # Log the losses for each step
+        writer.add_scalars(
+                "Losses",
+                {
+                    "Critic Loss": loss_critic.item(),
+                    "Generator Loss": gen_loss.item(),
+                    "L1 Loss": l1_loss.item(),
+                    "VGG Loss": loss_for_vgg.item(),
+                    "Adversarial Loss": adversarial_loss.item(),
+                    "Gradient Penalty": gp.item(),
+                },
+                global_step=tb_step,
+            )
         tb_step += 1
 
         if idx % 100 == 0 and idx > 0:
             plot_examples("test_images/", gen)
 
         loop.set_postfix(
+            epoch=epoch,
             gp=gp.item(),
             critic=loss_critic.item(),
             l1=l1_loss.item(),
@@ -76,13 +89,13 @@ def train_fn(
 
 
 def main():
-    dataset = MyImageFolder(root_dir="data/HighRes/8K/train/")
+    dataset = MyImageFolder(root_dir=r"E:\Imagenet\ILSVRC\Data\CLS-LOC\train")
     loader = DataLoader(
         dataset,
         batch_size=config.BATCH_SIZE,
         shuffle=True,
         pin_memory=True,
-        num_workers=config.NUM_WORKERS
+        #num_workers=config.NUM_WORKERS
     )
     gen = Generator(in_channels=3).to(config.DEVICE)
     disc = Discriminator(in_channels=3).to(config.DEVICE)
@@ -94,7 +107,8 @@ def main():
     l1 = nn.L1Loss()
     gen.train()
     disc.train()
-    vgg_loss = VGGLoss()
+    #vgg_loss = VGGLoss()
+    vgg_loss = torch.nn.CrossEntropyLoss()
 
     g_scaler = torch.cuda.amp.GradScaler()
     d_scaler = torch.cuda.amp.GradScaler()
@@ -127,6 +141,7 @@ def main():
             d_scaler,
             writer,
             tb_step,
+            epoch,
         )
 
         if config.SAVE_MODEL:
