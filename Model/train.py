@@ -38,7 +38,7 @@ def train_fn(
             gp = gradient_penalty(disc, high_res, fake, device=config.DEVICE)
             loss_critic = (
                 -(torch.mean(critic_real) - torch.mean(critic_fake))
-                # + config.LAMBDA_GP * gp
+                 + config.LAMBDA_GP * gp
             )
 
         opt_disc.zero_grad()
@@ -89,7 +89,7 @@ def train_fn(
 
 
 def main():
-    dataset = MyImageFolder(root_dir=r"E:\Imagenet\ILSVRC\Data\CLS-LOC\train")
+    dataset = MyImageFolder(root_dir=r"./data/LowRes")
     loader = DataLoader(
         dataset,
         batch_size=config.BATCH_SIZE,
