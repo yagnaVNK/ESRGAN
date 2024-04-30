@@ -64,6 +64,9 @@ The Inception Score metric is introduced in:
 
 - [Improved Techniques for Training GANs](https://arxiv.org/abs/1606.03498)
 
+Reffered the code from 
+- [ESRGAN implementation] (https://github.com/xinntao/ESRGAN/tree/master/models)
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
